@@ -7,7 +7,7 @@ from tqdm import tqdm
 import cv2
 
 
-class UAVDataset:
+class CVDataset:
     """
     A class to work with a dataset of UAV images and annotations.
     """
@@ -380,10 +380,10 @@ class UAVDataset:
 
 
 if __name__ == "__main__":
-    # Create an instance of UAVDataset
+    # Create an instance of CVDataset
     print()
     # path = r"C:\workspace\dataset\data.json"
-    # dataset = UAVDataset(path)
+    # dataset = CVDataset(path)
     # dataset.print_dataset_stats()
 
     # f, d: forward / backword
