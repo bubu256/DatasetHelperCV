@@ -307,13 +307,15 @@ class CVDataset:
         print("Removed invalid objects from the dataset.")
         return self
 
-    def create_yolo_dataset(self, output_folder, step=1, cls2id=None, rewrite_img=False):
+    def create_yolo_dataset(self, output_folder, step=None, fps=3, cls2id=None, rewrite_img=False):
         """
         Create a YOLO-format dataset by generating annotation files and copying images.
 
         Args:
             output_folder (str): Path to the output folder for the YOLO dataset.
         """
+        if not step and not fps:
+            raise Exception('step and fps params: You cannot specify both parameters at the same time.')
 
         if cls2id is None:
             cls2id = self.class_name2id
@@ -332,13 +334,20 @@ class CVDataset:
         for sequence_name, sequence_data in tqdm(self.data.items()):
             frames_data = sequence_data['frames']
             sample_type = sequence_data['sample_type']
+            fps_cur = sequence_data.get('fps', None)
+            if not fps_cur:
+                step_cur = step if step else 1
+            else:
+                step_cur = round(fps_cur / fps)
+                if step_cur < 1:
+                    step_cur = 1
 
             # sequence_output_folder = os.path.join(output_folder, sequence_name)
             # os.makedirs(sequence_output_folder, exist_ok=True)
 
             for i, (image_id, image_data) in enumerate(frames_data.items()):
-                if i % step:
-                    # processing each step frame
+                if i % step_cur:
+                    # processing each step_cur frame
                     continue
                 img_path = image_data['img_path']
                 abs_img_path = self.get_abs_img_path(img_path)
